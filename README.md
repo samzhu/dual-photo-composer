@@ -118,7 +118,7 @@ const generateCollage = () => {
   const ctx = canvas.getContext('2d');
 
   // 設定畫布尺寸
-  canvas.width = 1179;
+  canvas.width = 1300;
   canvas.height = 2556;
 
   // 繪製第一張圖片區域

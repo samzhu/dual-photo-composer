@@ -8,7 +8,7 @@ export default function PhotoCollageApp() {
   const fileInput1Ref = useRef(null);
   const fileInput2Ref = useRef(null);
 
-  const CANVAS_WIDTH = 1179;
+  const CANVAS_WIDTH = 1400;
   const CANVAS_HEIGHT = 2556;
 
   const handleImageUpload = (e, imageNumber) => {
