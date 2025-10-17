@@ -87,7 +87,7 @@ export default function PhotoCollageApp() {
     ctx.drawImage(img, x + offsetX, y + offsetY, drawWidth, drawHeight);
   };
 
-  const downloadCollage = () => {
+  const downloadCollage = async () => {
     const canvas = canvasRef.current;
     if (!canvas) {
       console.log('Canvas not found');
@@ -111,22 +111,143 @@ export default function PhotoCollageApp() {
       const seconds = String(now.getSeconds()).padStart(2, '0');
       const filename = `collage_${year}${month}${day}_${hours}${minutes}${seconds}.jpg`;
 
-      // 生成 JPG 格式
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.download = filename;
-          link.href = url;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
+      // 檢測是否為行動裝置且支援 Web Share API
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      const supportsShare = navigator.share && navigator.canShare;
+
+      if (isMobile && supportsShare) {
+        // iOS/Android: 使用 Web Share API（可以存到相簿）
+        try {
+          // 將 canvas 轉換為 blob
+          const blob = await new Promise((resolve) => {
+            canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.95);
+          });
+
+          if (!blob) {
+            throw new Error('無法生成圖片');
+          }
+
+          // 建立檔案物件
+          const file = new File([blob], filename, { type: 'image/jpeg' });
+
+          // 檢查是否可以分享檔案
+          if (navigator.canShare({ files: [file] })) {
+            // 開啟系統分享介面
+            await navigator.share({
+              files: [file],
+              title: '照片拼貼',
+              text: '我的照片拼貼作品'
+            });
+            console.log('分享成功');
+          } else {
+            // 降級方案：開啟新視窗
+            openImageInNewWindow(canvas, filename);
+          }
+        } catch (error) {
+          if (error.name === 'AbortError') {
+            // 使用者取消分享
+            console.log('使用者取消分享');
+          } else {
+            console.error('分享失敗:', error);
+            // 降級方案：開啟新視窗
+            openImageInNewWindow(canvas, filename);
+          }
         }
-      }, 'image/jpeg', 0.95);
+      } else {
+        // 桌面版：直接下載
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+          }
+        }, 'image/jpeg', 0.95);
+      }
     } catch (error) {
       console.error('Download error:', error);
       alert('下載失敗，請稍後再試');
+    }
+  };
+
+  // 降級方案：在新視窗開啟圖片（供使用者長按儲存）
+  const openImageInNewWindow = (canvas, filename) => {
+    try {
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+      const newWindow = window.open('', '_blank');
+
+      if (newWindow) {
+        newWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>${filename}</title>
+              <style>
+                body {
+                  margin: 0;
+                  padding: 20px;
+                  background: #f0f0f0;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  min-height: 100vh;
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                }
+                .instructions {
+                  background: white;
+                  padding: 15px 20px;
+                  border-radius: 10px;
+                  margin-bottom: 20px;
+                  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                  text-align: center;
+                  max-width: 90%;
+                }
+                .instructions h3 {
+                  margin: 0 0 10px 0;
+                  color: #333;
+                  font-size: 18px;
+                }
+                .instructions p {
+                  margin: 5px 0;
+                  color: #666;
+                  font-size: 14px;
+                }
+                .instructions .highlight {
+                  color: #007AFF;
+                  font-weight: 600;
+                }
+                img {
+                  max-width: 90%;
+                  height: auto;
+                  border-radius: 10px;
+                  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+                }
+              </style>
+            </head>
+            <body>
+              <div class="instructions">
+                <h3>📱 如何儲存到相簿</h3>
+                <p><span class="highlight">長按圖片</span> → 選擇「<span class="highlight">儲存圖片</span>」</p>
+                <p>圖片就會存到你的照片相簿中 ✨</p>
+              </div>
+              <img src="${dataUrl}" alt="${filename}">
+            </body>
+          </html>
+        `);
+        newWindow.document.close();
+      } else {
+        alert('請允許彈出視窗以下載圖片');
+      }
+    } catch (error) {
+      console.error('Open image error:', error);
+      alert('無法開啟圖片，請稍後再試');
     }
   };
 
