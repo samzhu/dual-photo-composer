@@ -270,11 +270,57 @@ npm run build
 # 可以部署到任何靜態網站託管服務
 ```
 
+### 部署到 GitHub Pages
+
+本專案已配置自動化 GitHub Actions 工作流程，可以一鍵部署到 GitHub Pages。
+
+#### 首次部署設定
+
+1. **啟用 GitHub Pages**
+   - 前往專案的 Settings → Pages
+   - Source 選擇 "GitHub Actions"
+   - 保存設定
+
+2. **推送程式碼**
+   ```bash
+   git add .
+   git commit -m "Initial commit"
+   git push origin main
+   ```
+
+3. **自動部署**
+   - GitHub Actions 會自動觸發建置和部署流程
+   - 約 1-2 分鐘後，網站就會上線
+   - 訪問網址：`https://samzhu.github.io/dual-photo-composer/`
+
+#### 後續更新
+
+每次推送到 `main` 分支，都會自動觸發部署：
+
+```bash
+git add .
+git commit -m "Update features"
+git push origin main
+```
+
+#### 手動觸發部署
+
+也可以在 GitHub 上手動觸發部署：
+1. 前往 Actions 頁面
+2. 選擇 "Deploy to GitHub Pages" workflow
+3. 點擊 "Run workflow"
+
+#### 部署狀態
+
+可以在以下位置查看部署狀態：
+- Actions 頁面：查看建置過程和日誌
+- Environments 頁面：查看部署歷史和網站 URL
+
 ### 推薦的部署平台
 
+- [GitHub Pages](https://pages.github.com) - 免費，適合開源專案（已配置）
 - [Vercel](https://vercel.com) - 零配置，自動部署
 - [Netlify](https://netlify.com) - 簡單易用，免費方案
-- [GitHub Pages](https://pages.github.com) - 免費，適合開源專案
 - [Cloudflare Pages](https://pages.cloudflare.com) - 快速，全球 CDN
 
 ## 🎨 自訂配置
