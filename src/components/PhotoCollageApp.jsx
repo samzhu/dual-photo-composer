@@ -8,7 +8,7 @@ export default function PhotoCollageApp() {
   const fileInput1Ref = useRef(null);
   const fileInput2Ref = useRef(null);
 
-  const CANVAS_WIDTH = 1400;
+  const CANVAS_WIDTH = 1700;
   const CANVAS_HEIGHT = 2556;
 
   const handleImageUpload = (e, imageNumber) => {
@@ -275,7 +275,7 @@ export default function PhotoCollageApp() {
             <Camera className="w-10 h-10 text-purple-600" />
             <h1 className="text-4xl font-bold text-gray-800">照片拼貼工具</h1>
           </div>
-          <p className="text-gray-600">上傳兩張照片，創建精美拼貼圖片 (1179 × 2556)</p>
+          <p className="text-gray-600">上傳兩張照片，創建精美拼貼圖片 (1700 × 2556)</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">

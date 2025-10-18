@@ -4,7 +4,7 @@
 
 ## ✨ 功能特色
 
-- 🎨 **精確尺寸輸出**：生成 1179 × 2556 像素的拼貼圖（長寬比 9.5:9）
+- 🎨 **精確尺寸輸出**：生成 1700 × 2556 像素的拼貼圖
 - 📱 **行動優化**：針對 iPhone/iPad/Android 優化
 - 🖼️ **智能圖片適配**：自動調整圖片大小以完美填滿區域
 - 💾 **智能儲存**：
@@ -118,7 +118,7 @@ const generateCollage = () => {
   const ctx = canvas.getContext('2d');
 
   // 設定畫布尺寸
-  canvas.width = 1300;
+  canvas.width = 1700;
   canvas.height = 2556;
 
   // 繪製第一張圖片區域
@@ -146,7 +146,7 @@ const generateCollage = () => {
 ```
 
 **說明**：
-- 設定固定的畫布尺寸（1179 × 2556）
+- 設定固定的畫布尺寸（1700 × 2556）
 - 計算兩個圖片區域的位置和大小
 - 先繪製背景色，再繪製圖片
 - 第二張圖片置中顯示，四周留白
@@ -334,7 +334,7 @@ git push origin main
 在 `src/components/PhotoCollageApp.jsx` 中修改常數：
 
 ```javascript
-const CANVAS_WIDTH = 1179;   // 調整寬度
+const CANVAS_WIDTH = 1700;   // 調整寬度
 const CANVAS_HEIGHT = 2556;  // 調整高度
 ```
 
