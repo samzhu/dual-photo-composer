@@ -30,6 +30,33 @@ export default function PhotoCollageApp() {
     }
   };
 
+  const handlePaste = (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+
+      // 檢查是否為圖片
+      if (item.type.indexOf('image') !== -1) {
+        const file = item.getAsFile();
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = new Image();
+            img.onload = () => {
+              // 貼上的圖片永遠更新第一張圖片
+              setImage1(img);
+            };
+            img.src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+        break; // 只處理第一張圖片
+      }
+    }
+  };
+
   const generateCollage = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -267,6 +294,16 @@ export default function PhotoCollageApp() {
     }
   }, [image1, image2]);
 
+  React.useEffect(() => {
+    // 添加全局貼上事件監聽器
+    window.addEventListener('paste', handlePaste);
+
+    // 清理函數
+    return () => {
+      window.removeEventListener('paste', handlePaste);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
       <div className="max-w-6xl mx-auto">
@@ -282,6 +319,7 @@ export default function PhotoCollageApp() {
           {/* 第一張圖片上傳區 */}
           <div className="bg-white rounded-xl shadow-lg p-6">
             <h3 className="text-lg font-semibold mb-4 text-gray-700">第一張圖片 (上方淺藍區)</h3>
+            <p className="text-sm text-gray-500 mb-3">💡 提示：可使用 Ctrl+V (Mac: ⌘+V) 貼上圖片</p>
             <input
               ref={fileInput1Ref}
               type="file"
