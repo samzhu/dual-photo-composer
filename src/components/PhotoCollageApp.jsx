@@ -316,6 +316,30 @@ export default function PhotoCollageApp() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">
+          {/* 第二張圖片上傳區 */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold mb-4 text-gray-700">第二張圖片 (下方白色區)</h3>
+            <input
+              ref={fileInput2Ref}
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleImageUpload(e, 2)}
+              className="hidden"
+            />
+            <button
+              onClick={() => fileInput2Ref.current?.click()}
+              className="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors"
+            >
+              <Upload className="w-5 h-5" />
+              {image2 ? '更換圖片' : '上傳圖片'}
+            </button>
+            {image2 && (
+              <div className="mt-4 border-2 border-purple-200 rounded-lg overflow-hidden">
+                <img src={image2.src} alt="Preview 2" className="w-full h-48 object-cover" />
+              </div>
+            )}
+          </div>
+
           {/* 第一張圖片上傳區 */}
           <div className="bg-white rounded-xl shadow-lg p-6">
             <h3 className="text-lg font-semibold mb-4 text-gray-700">第一張圖片 (上方淺藍區)</h3>
@@ -337,30 +361,6 @@ export default function PhotoCollageApp() {
             {image1 && (
               <div className="mt-4 border-2 border-blue-200 rounded-lg overflow-hidden">
                 <img src={image1.src} alt="Preview 1" className="w-full h-48 object-cover" />
-              </div>
-            )}
-          </div>
-
-          {/* 第二張圖片上傳區 */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-semibold mb-4 text-gray-700">第二張圖片 (下方白色區)</h3>
-            <input
-              ref={fileInput2Ref}
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleImageUpload(e, 2)}
-              className="hidden"
-            />
-            <button
-              onClick={() => fileInput2Ref.current?.click()}
-              className="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors"
-            >
-              <Upload className="w-5 h-5" />
-              {image2 ? '更換圖片' : '上傳圖片'}
-            </button>
-            {image2 && (
-              <div className="mt-4 border-2 border-purple-200 rounded-lg overflow-hidden">
-                <img src={image2.src} alt="Preview 2" className="w-full h-48 object-cover" />
               </div>
             )}
           </div>
